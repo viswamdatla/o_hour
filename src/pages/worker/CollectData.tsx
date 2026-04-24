@@ -103,14 +103,16 @@ export default function CollectData() {
   const loadDeviceDirectly = async (deviceId: string) => {
     const { data: device, error } = await supabase
       .from('site_devices')
-      .select('*, site_zones(*, form_templates(id, name, form_fields(*)))')
+      .select('*, form_templates(id, name, form_fields(*)), site_zones(*, form_templates(id, name, form_fields(*)))')
       .eq('id', deviceId)
       .single();
     if (error || !device) return;
 
     setSelectedDevice(device);
     setSelectedZone(device.site_zones);
-    loadFormFields(device.site_zones?.form_templates);
+    // Device's own template takes priority over zone template
+    const template = device.form_templates || device.site_zones?.form_templates;
+    loadFormFields(template);
   };
 
   const loadFormFields = (template: any) => {
@@ -135,7 +137,7 @@ export default function CollectData() {
   const fetchDevices = async (zoneId: string) => {
     const { data } = await supabase
       .from('site_devices')
-      .select('*')
+      .select('*, form_templates(id, name, form_fields(*))')
       .eq('zone_id', zoneId)
       .eq('active', true)
       .order('sort_order');
@@ -223,6 +225,9 @@ export default function CollectData() {
   // Step 4: Select Device → Step 5
   const handleDeviceSelect = (device: any) => {
     setSelectedDevice(device);
+    // Use device's own template if configured, otherwise use the zone's template
+    const template = device.form_templates || selectedZone?.form_templates;
+    loadFormFields(template);
     setStep('FORM');
   };
 
@@ -240,7 +245,7 @@ export default function CollectData() {
         .from('entries').insert({
           site_id: siteId,
           worker_phone: phone,
-          form_template_id: selectedZone?.form_template_id || null,
+          form_template_id: selectedDevice?.form_template_id || selectedZone?.form_template_id || null,
           zone_id: selectedZone?.id || null,
           device_id: selectedDevice?.id || null,
           field_values: formValues,

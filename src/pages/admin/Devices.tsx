@@ -106,7 +106,7 @@ export default function Devices() {
   // Device form
   const [isDeviceFormOpen, setIsDeviceFormOpen] = useState(false);
   const [editingDevice, setEditingDevice] = useState<any>(null);
-  const [deviceForm, setDeviceForm] = useState({ name: '', device_code: '' });
+  const [deviceForm, setDeviceForm] = useState({ name: '', device_code: '', form_template_id: '' });
 
   useEffect(() => { fetchInitial(); }, []);
 
@@ -172,13 +172,13 @@ export default function Devices() {
   // ── Device CRUD ────────────────────────────────────────────────
   const openDeviceForm = (device?: any) => {
     setEditingDevice(device || null);
-    setDeviceForm(device ? { name: device.name, device_code: device.device_code || '' } : { name: '', device_code: '' });
+    setDeviceForm(device ? { name: device.name, device_code: device.device_code || '', form_template_id: device.form_template_id || '' } : { name: '', device_code: '', form_template_id: '' });
     setIsDeviceFormOpen(true);
   };
 
   const saveDevice = async (e: React.FormEvent) => {
     e.preventDefault();
-    const payload = { ...deviceForm, zone_id: selectedZone.id, site_id: siteId };
+    const payload = { ...deviceForm, zone_id: selectedZone.id, site_id: siteId, form_template_id: deviceForm.form_template_id || null };
     if (editingDevice) {
       await supabase.from('site_devices').update(payload).eq('id', editingDevice.id);
     } else {
@@ -406,6 +406,25 @@ export default function Devices() {
               <form onSubmit={saveDevice} className="space-y-4">
                 <Input label="Device Name" placeholder="e.g. HVAC Unit 1" required value={deviceForm.name} onChange={e => setDeviceForm({ ...deviceForm, name: e.target.value })} />
                 <Input label="Device Code / Tag" placeholder="e.g. HVAC-01 (optional)" value={deviceForm.device_code} onChange={e => setDeviceForm({ ...deviceForm, device_code: e.target.value })} />
+                <div className="space-y-1">
+                  <label className="block text-sm font-medium text-slate-700">
+                    Form Template
+                    <span className="ml-1.5 text-xs font-normal text-slate-400">(overrides zone template)</span>
+                  </label>
+                  <select
+                    className="w-full h-11 px-3 rounded-md border border-slate-300 focus:border-amber-500 outline-none bg-white text-sm"
+                    value={deviceForm.form_template_id}
+                    onChange={e => setDeviceForm({ ...deviceForm, form_template_id: e.target.value })}
+                  >
+                    <option value="">-- Use zone template --</option>
+                    {templates.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                  </select>
+                  {!deviceForm.form_template_id && selectedZone?.form_template_id && (
+                    <p className="text-xs text-slate-400 mt-1">
+                      Will use: <span className="font-medium">{templates.find(t => t.id === selectedZone.form_template_id)?.name || 'Zone template'}</span>
+                    </p>
+                  )}
+                </div>
                 <div className="pt-4 flex justify-end gap-3 border-t">
                   <Button type="button" variant="outline" onClick={() => setIsDeviceFormOpen(false)}>Cancel</Button>
                   <Button type="submit">Save Device</Button>
