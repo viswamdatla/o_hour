@@ -290,7 +290,7 @@ export default function Sites() {
                               <div key={device.id} className="flex items-center justify-between px-4 py-3 hover:bg-slate-50">
                                 <div className="flex items-center gap-3">
                                   <div className={`w-7 h-7 rounded-full flex items-center justify-center ${COLOR_MAP[zone.icon] || 'bg-slate-100'}`}>
-                                    {ICON_MAP[zone.icon] ? React.cloneElement(ICON_MAP[zone.icon] as React.ReactElement, { className: 'w-3.5 h-3.5' }) : null}
+                                    {ICON_MAP[zone.icon] ? React.cloneElement(ICON_MAP[zone.icon] as React.ReactElement<{ className: string }>, { className: 'w-3.5 h-3.5' }) : null}
                                   </div>
                                   <div>
                                     <p className="font-medium text-slate-800 text-sm">{device.name}</p>

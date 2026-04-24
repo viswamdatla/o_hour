@@ -315,7 +315,7 @@ export default function Devices() {
                           <div className="flex items-center gap-3">
                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${zoneColor}`}>
                               {ICON_MAP[selectedZone?.icon]
-                                ? React.cloneElement(ICON_MAP[selectedZone.icon] as React.ReactElement, { className: 'w-5 h-5' })
+                                ? React.cloneElement(ICON_MAP[selectedZone.icon] as React.ReactElement<{ className: string }>, { className: 'w-5 h-5' })
                                 : <Zap className="w-5 h-5" />}
                             </div>
                             <div>
@@ -368,7 +368,7 @@ export default function Devices() {
                         className={`flex items-center gap-2.5 p-3 rounded-xl border-2 text-sm font-medium transition-all ${zoneForm.icon === opt.icon ? 'border-amber-400 bg-amber-50 text-amber-700' : 'border-slate-200 hover:border-slate-300 text-slate-700'}`}
                       >
                         <span className={`w-8 h-8 rounded-lg flex items-center justify-center ${opt.color}`}>
-                          {ICON_MAP[opt.icon] ? React.cloneElement(ICON_MAP[opt.icon] as React.ReactElement, { className: 'w-4 h-4' }) : null}
+                          {ICON_MAP[opt.icon] ? React.cloneElement(ICON_MAP[opt.icon] as React.ReactElement<{ className: string }>, { className: 'w-4 h-4' }) : null}
                         </span>
                         {opt.label}
                       </button>

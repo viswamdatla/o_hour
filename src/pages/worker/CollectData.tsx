@@ -418,7 +418,7 @@ export default function CollectData() {
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${ZONE_COLORS[selectedZone?.icon] || 'bg-slate-100'}`}>
-                        {ZONE_ICONS[selectedZone?.icon] ? React.cloneElement(ZONE_ICONS[selectedZone.icon] as React.ReactElement, { className: 'w-5 h-5' }) : <Zap className="w-5 h-5" />}
+                        {ZONE_ICONS[selectedZone?.icon] ? React.cloneElement(ZONE_ICONS[selectedZone.icon] as React.ReactElement<{ className: string }>, { className: 'w-5 h-5' }) : <Zap className="w-5 h-5" />}
                       </div>
                       <div className="text-left">
                         <p className="font-semibold text-slate-800">{device.name}</p>
@@ -439,7 +439,7 @@ export default function CollectData() {
                 <h2 className="text-xl font-bold text-slate-800">{selectedZone?.form_templates?.name || siteData?.form_templates?.name || 'Data Entry Form'}</h2>
                 {selectedDevice && (
                   <div className={`inline-flex items-center gap-2 mt-2 px-3 py-1 rounded-full text-sm font-semibold ${ZONE_COLORS[selectedZone?.icon] || 'bg-slate-100 text-slate-600'}`}>
-                    {ZONE_ICONS[selectedZone?.icon] ? React.cloneElement(ZONE_ICONS[selectedZone.icon] as React.ReactElement, { className: 'w-4 h-4' }) : null}
+                    {ZONE_ICONS[selectedZone?.icon] ? React.cloneElement(ZONE_ICONS[selectedZone.icon] as React.ReactElement<{ className: string }>, { className: 'w-4 h-4' }) : null}
                     {selectedDevice.name}
                   </div>
                 )}
