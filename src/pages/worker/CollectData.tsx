@@ -181,7 +181,7 @@ export default function CollectData() {
       if (error || !session) throw new Error('Session not found');
       if (session.otp_code !== workerOtp) throw new Error('Invalid OTP. Please try again.');
       if (new Date(session.expires_at) < new Date()) throw new Error('OTP expired. Please go back and request a new one.');
-      await supabase.from('otp_sessions').update({ used: true }).eq('id', workerSessionId);
+      await supabase.from('otp_sessions').update({ verified: true }).eq('id', workerSessionId);
 
       // Branch: device QR scanned → go straight to form
       if (deviceIdParam && selectedDevice) {
@@ -277,12 +277,12 @@ export default function CollectData() {
     setError(''); setIsLoading(true);
     try {
       const { data: sessions } = await supabase
-        .from('otp_sessions').select('*').eq('type', 'site_confirm').eq('entry_id', entryId).eq('used', false).order('created_at', { ascending: false });
+        .from('otp_sessions').select('*').eq('type', 'site_confirm').eq('entry_id', entryId).eq('verified', false).order('created_at', { ascending: false });
       const session = sessions?.[0];
       if (!session) throw new Error('Session expired or not found.');
       if (session.otp_code !== siteConfirmOtp) throw new Error('Incorrect code. Check the site screen and try again.');
       if (new Date(session.expires_at) < new Date()) throw new Error('Code expired. Please restart.');
-      await supabase.from('otp_sessions').update({ used: true }).eq('id', session.id);
+      await supabase.from('otp_sessions').update({ verified: true }).eq('id', session.id);
       await supabase.from('entries').update({ status: 'confirmed' }).eq('id', entryId);
       setStep('SUCCESS');
     } catch (err: any) {
