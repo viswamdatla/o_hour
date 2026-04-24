@@ -8,7 +8,7 @@ const CollectData = React.lazy(() => import('@/pages/worker/CollectData'));
 const SiteScreen = React.lazy(() => import('@/pages/site-screen/SiteScreen'));
 const Login = React.lazy(() => import('@/pages/admin/Login'));
 const Dashboard = React.lazy(() => import('@/pages/admin/Dashboard'));
-const Sites = React.lazy(() => import('@/pages/admin/Sites'));
+const Devices = React.lazy(() => import('@/pages/admin/Devices'));
 const Workers = React.lazy(() => import('@/pages/admin/Workers'));
 const Forms = React.lazy(() => import('@/pages/admin/Forms'));
 const Entries = React.lazy(() => import('@/pages/admin/Entries'));
@@ -36,7 +36,7 @@ function App() {
           {/* Admin Portal - Authenticated Routes */}
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="sites" element={<Sites />} />
+            <Route path="devices" element={<Devices />} />
             <Route path="workers" element={<Workers />} />
             <Route path="forms" element={<Forms />} />
             <Route path="entries" element={<Entries />} />

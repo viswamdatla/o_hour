@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, MapPin, Users, FileText, List, LogOut, Loader2 } from 'lucide-react';
+import { LayoutDashboard, Cpu, Users, FileText, List, LogOut, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 export default function AdminLayout() {
@@ -28,7 +28,7 @@ export default function AdminLayout() {
 
   const navigation = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-    { name: 'Sites', href: '/admin/sites', icon: MapPin },
+    { name: 'Devices', href: '/admin/devices', icon: Cpu },
     { name: 'Workers', href: '/admin/workers', icon: Users },
     { name: 'Form Templates', href: '/admin/forms', icon: FileText },
     { name: 'Entries', href: '/admin/entries', icon: List },
