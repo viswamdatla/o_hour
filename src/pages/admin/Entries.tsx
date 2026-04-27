@@ -5,9 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import {
   Eye, Clock, CheckCircle2, XCircle, Download, ChevronRight,
-  Wind, Zap, Battery, Activity, Power, Droplets, Flame, Cpu
+  Wind, Zap, Battery, Activity, Power, Droplets, Flame, Cpu,
+  CalendarDays, List
 } from 'lucide-react';
 import { format } from 'date-fns';
+import EntryCalendar from '@/components/admin/EntryCalendar';
 
 // ── Icon / colour maps (same as worker flow) ──────────────────
 const ICON_MAP: Record<string, React.ReactNode> = {
@@ -40,9 +42,11 @@ const StatusBadge = ({ status }: { status: string }) => {
 };
 
 type View = 'zones' | 'devices' | 'entries';
+type EntryView = 'table' | 'calendar';
 
 export default function Entries() {
   const [view, setView] = useState<View>('zones');
+  const [entryView, setEntryView] = useState<EntryView>('calendar');
 
   // Data
   const [zones, setZones] = useState<any[]>([]);
@@ -249,11 +253,11 @@ export default function Entries() {
             </div>
           )}
 
-          {/* ── VIEW: Entries Table ── */}
+          {/* ── VIEW: Entries ── */}
           {view === 'entries' && (
             <>
               {/* Device info card */}
-              <div className={`flex items-center gap-3 px-5 py-3 rounded-xl border-2 mb-6 ${zoneColors.tile}`}>
+              <div className={`flex items-center gap-3 px-5 py-3 rounded-xl border-2 mb-4 ${zoneColors.tile}`}>
                 <div className="w-9 h-9 rounded-lg bg-white/60 flex items-center justify-center">
                   {ICON_MAP[selectedZone?.icon] || <Zap className="w-5 h-5" />}
                 </div>
@@ -263,42 +267,58 @@ export default function Entries() {
                 </div>
               </div>
 
-              <Card>
-                <CardContent className="p-0 overflow-x-auto">
-                  <table className="w-full text-left whitespace-nowrap">
-                    <thead className="bg-slate-50 border-b">
-                      <tr>
-                        <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Timestamp</th>
-                        <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Worker Phone</th>
-                        <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Status</th>
-                        <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide text-right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {entries.length === 0 ? (
+              {/* Table / Calendar toggle */}
+              <div className="flex gap-1 bg-slate-100 p-1 rounded-xl mb-5 w-fit">
+                <button onClick={() => setEntryView('calendar')}
+                  className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold transition-all
+                    ${entryView === 'calendar' ? 'bg-white text-amber-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
+                  <CalendarDays className="w-4 h-4" /> Calendar
+                </button>
+                <button onClick={() => setEntryView('table')}
+                  className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold transition-all
+                    ${entryView === 'table' ? 'bg-white text-amber-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
+                  <List className="w-4 h-4" /> Table
+                </button>
+              </div>
+
+              {/* Calendar view */}
+              {entryView === 'calendar' && (
+                <EntryCalendar entries={entries} onViewEntry={setSelectedEntry} />
+              )}
+
+              {/* Table view */}
+              {entryView === 'table' && (
+                <Card>
+                  <CardContent className="p-0 overflow-x-auto">
+                    <table className="w-full text-left whitespace-nowrap">
+                      <thead className="bg-slate-50 border-b">
                         <tr>
-                          <td colSpan={4} className="px-6 py-12 text-center text-slate-400">
-                            No entries for this device yet.
-                          </td>
+                          <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Timestamp</th>
+                          <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Worker Phone</th>
+                          <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Status</th>
+                          <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide text-right">Actions</th>
                         </tr>
-                      ) : entries.map(entry => (
-                        <tr key={entry.id} className="hover:bg-slate-50 transition-colors">
-                          <td className="px-6 py-4 text-slate-500 text-sm">
-                            {format(new Date(entry.created_at), 'MMM d, yyyy HH:mm')}
-                          </td>
-                          <td className="px-6 py-4 text-slate-600 font-mono text-sm">{entry.worker_phone}</td>
-                          <td className="px-6 py-4"><StatusBadge status={entry.status} /></td>
-                          <td className="px-6 py-4 text-right">
-                            <Button variant="outline" size="sm" onClick={() => setSelectedEntry(entry)}>
-                              <Eye className="w-4 h-4 mr-2" /> View
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </CardContent>
-              </Card>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {entries.length === 0 ? (
+                          <tr><td colSpan={4} className="px-6 py-12 text-center text-slate-400">No entries for this device yet.</td></tr>
+                        ) : entries.map(entry => (
+                          <tr key={entry.id} className="hover:bg-slate-50 transition-colors">
+                            <td className="px-6 py-4 text-slate-500 text-sm">{format(new Date(entry.created_at), 'MMM d, yyyy HH:mm')}</td>
+                            <td className="px-6 py-4 text-slate-600 font-mono text-sm">{entry.worker_phone}</td>
+                            <td className="px-6 py-4"><StatusBadge status={entry.status} /></td>
+                            <td className="px-6 py-4 text-right">
+                              <Button variant="outline" size="sm" onClick={() => setSelectedEntry(entry)}>
+                                <Eye className="w-4 h-4 mr-2" /> View
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </CardContent>
+                </Card>
+              )}
             </>
           )}
         </>
