@@ -162,8 +162,11 @@ export default function CollectData() {
         .select().single();
       if (sessionErr) throw sessionErr;
 
-      console.log(`[SMS MOCK] OTP for ${phone}: ${generatedOtp}`);
-      setDevOtp(generatedOtp);
+      // Send OTP via Twilio (Supabase Edge Function)
+      const { error: smsErr } = await supabase.functions.invoke('send-otp', {
+        body: { phone, otp: generatedOtp },
+      });
+      if (smsErr) console.warn('SMS send failed (OTP still stored):', smsErr);
       setWorkerSessionId(session.id);
       setWorkerName(worker.name);
       setStep('WORKER_OTP');
