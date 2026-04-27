@@ -12,6 +12,7 @@ const Devices = React.lazy(() => import('@/pages/admin/Devices'));
 const Workers = React.lazy(() => import('@/pages/admin/Workers'));
 const Forms = React.lazy(() => import('@/pages/admin/Forms'));
 const Entries = React.lazy(() => import('@/pages/admin/Entries'));
+const Alerts = React.lazy(() => import('@/pages/admin/Alerts'));
 
 const LoadingScreen = () => (
   <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -40,6 +41,7 @@ function App() {
             <Route path="workers" element={<Workers />} />
             <Route path="forms" element={<Forms />} />
             <Route path="entries" element={<Entries />} />
+            <Route path="alerts" element={<Alerts />} />
           </Route>
           
           {/* Catch-all */}

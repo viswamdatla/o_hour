@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Cpu, Users, FileText, List, LogOut, Loader2 } from 'lucide-react';
+import { LayoutDashboard, Cpu, Users, FileText, List, LogOut, Loader2, Bell } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 export default function AdminLayout() {
@@ -32,6 +32,7 @@ export default function AdminLayout() {
     { name: 'Workers', href: '/admin/workers', icon: Users },
     { name: 'Form Templates', href: '/admin/forms', icon: FileText },
     { name: 'Entries', href: '/admin/entries', icon: List },
+    { name: 'Alerts', href: '/admin/alerts', icon: Bell },
   ];
 
   const handleLogout = async () => {
