@@ -45,7 +45,8 @@ const COLOR_MAP: Record<string, string> = {
 // ── QR canvas per device ─────────────────────────────────────────
 function DeviceQR({ siteId, deviceId, deviceName }: { siteId: string; deviceId: string; deviceName: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const url = `${window.location.origin}/collect?site=${siteId}&device=${deviceId}`;
+  const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+  const url = `${baseUrl}/collect?site=${siteId}&device=${deviceId}`;
 
   useEffect(() => {
     if (canvasRef.current) {
