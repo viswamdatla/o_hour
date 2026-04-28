@@ -37,7 +37,7 @@ export default function Dashboard() {
         supabase.from('entries').select('*', { count: 'exact', head: true }),
         supabase.from('entries').select('*', { count: 'exact', head: true }).eq('status', 'confirmed'),
         supabase.from('entries')
-          .select(`*, sites(name), form_templates(name)`)
+          .select(`*, site_zones(name), site_devices(name), form_templates(name)`)
           .order('created_at', { ascending: false })
           .limit(5),
         supabase.from('entries')
@@ -143,10 +143,10 @@ export default function Dashboard() {
                   <div className={`w-2 h-2 rounded-full ${entry.status === 'confirmed' ? 'bg-green-500' : 'bg-amber-500'}`} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-slate-900 truncate">
-                      {entry.sites?.name || 'Unknown Site'}
+                      {entry.site_devices?.name || 'Unknown Device'}
                     </p>
                     <p className="text-xs text-slate-500 truncate">
-                      {entry.worker_phone} • {entry.form_templates?.name}
+                      {entry.worker_phone} • {entry.site_zones?.name || entry.form_templates?.name}
                     </p>
                   </div>
                   <div className="text-xs text-slate-400 whitespace-nowrap">
